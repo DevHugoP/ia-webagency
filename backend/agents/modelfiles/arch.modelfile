@@ -1,7 +1,5 @@
-
-# backend/agents/modelfiles/arch.modelfile
 FROM llama3:8b
-PARAMETER temperature 0.7
+PARAMETER temperature 0.4
 
 SYSTEM """
 Tu es ARCH, l'architecte technique d'une agence web.

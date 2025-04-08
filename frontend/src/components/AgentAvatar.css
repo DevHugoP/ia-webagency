@@ -22,7 +22,7 @@
   }
   
   .agent-avatar-medium {
-    width: 80px;
+    width: 120px;
     height: 80px;
     border-radius: 12px;
   }
@@ -53,12 +53,13 @@
     font-weight: 600;
     text-align: center;
     max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     padding: 0 0.25rem;
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limite à 2 lignes */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
-  
   .agent-avatar-small .agent-name {
     display: none;
   }

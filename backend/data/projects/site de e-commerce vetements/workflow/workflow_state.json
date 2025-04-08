@@ -1,0 +1,108 @@
+{
+  "project_name": "site de e-commerce vetements",
+  "status": "pending",
+  "current_step_index": 0,
+  "steps": [
+    {
+      "id": "01_brief_strategique",
+      "agent": "vision",
+      "title": "Brief stratégique",
+      "description": "Analyse stratégique du projet",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "result": null
+    },
+    {
+      "id": "02_design_ux",
+      "agent": "pixel",
+      "title": "Design UX/UI",
+      "description": "Conception des wireframes et du design",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "result": null
+    },
+    {
+      "id": "03_architecture",
+      "agent": "arch",
+      "title": "Architecture technique",
+      "description": "Définition de l'architecture technique",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "result": null
+    },
+    {
+      "id": "04_planning",
+      "agent": "pm",
+      "title": "Planning de projet",
+      "description": "Planification détaillée du projet",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "result": null
+    },
+    {
+      "id": "05_frontend",
+      "agent": "script",
+      "title": "Développement Frontend",
+      "description": "Implémentation de l'interface utilisateur",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "result": null
+    },
+    {
+      "id": "06_backend",
+      "agent": "node",
+      "title": "Développement Backend",
+      "description": "Développement des API et services",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "result": null
+    },
+    {
+      "id": "07_database",
+      "agent": "data",
+      "title": "Base de données",
+      "description": "Conception de la base de données",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "result": null
+    },
+    {
+      "id": "08_securite",
+      "agent": "secure",
+      "title": "Audit de sécurité",
+      "description": "Analyse et recommandations de sécurité",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "result": null
+    },
+    {
+      "id": "09_tests",
+      "agent": "test",
+      "title": "Plan de tests",
+      "description": "Stratégie et scénarios de test",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "result": null
+    },
+    {
+      "id": "10_deploiement",
+      "agent": "deploy",
+      "title": "Plan de déploiement",
+      "description": "Stratégie de déploiement et configuration",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "result": null
+    }
+  ],
+  "updated_at": "2025-04-08T16:08:00.398510"
+}

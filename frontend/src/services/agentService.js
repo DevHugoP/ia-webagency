@@ -1,4 +1,4 @@
-import { get, post } from './api';
+import { get } from './api';
 
 // Liste des agents prédéfinis avec des informations par défaut
 const DEFAULT_AGENTS = [
@@ -84,7 +84,7 @@ export const fetchAgents = async () => {
  * @returns {Promise<Object>} Réponse de l'agent
  */
 export const sendMessageToAgent = async (agentName, message) => {
-  return post(`/agents/${agentName}`, { message });
+  return get(`/agents/${agentName}`, { message });
 };
 
 /**

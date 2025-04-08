@@ -15,7 +15,8 @@ import sqlite3
 
 # Initialisation de l'application
 app = Flask(__name__)
-CORS(app)  # Permet les requêtes cross-origin pour le développement
+# Configuration CORS plus permissive
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 
 # S'assurer que les dossiers nécessaires existent
 os.makedirs('data/db', exist_ok=True)
@@ -211,17 +212,23 @@ def get_agents():
     agents = agent_manager.list_agents()
     return jsonify(agents)
 
-@app.route('/api/agents/<agent_name>', methods=['POST'])
+@app.route('/api/agents/<agent_name>', methods=['GET', 'POST'])
 def interact_with_agent(agent_name):
-    data = request.json
-    message = data.get('message')
+    # Handle message extraction differently for GET and POST
+    if request.method == 'GET':
+        message = request.args.get('message')
+    else:  # POST
+        data = request.json
+        message = data.get('message') if data else None
     
     if not message:
-        return jsonify({'error': 'Message is required'}), 400
+        return jsonify({'error': 'Message est requis'}), 400
     
-    response = agent_manager.ask_agent(agent_name, message)
-    return jsonify({'response': response})
-
+    try:
+        response = agent_manager.ask_agent(agent_name, message)
+        return jsonify({'response': response})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 # Routes pour la base de connaissances
 @app.route('/api/knowledge', methods=['GET'])
 def get_knowledge_categories():

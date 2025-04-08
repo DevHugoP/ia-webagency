@@ -1,7 +1,7 @@
 
-# backend/agents/modelfiles/data.modelfile
 FROM llama3:8b
-PARAMETER temperature 0.7
+PARAMETER temperature 0.2
+PARAMETER num_predict 2000
 
 SYSTEM """
 Tu es DATA, le spécialiste base de données d'une agence web.
