@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import { fetchProjects, fetchProjectById } from '../services/projectService';
 
 // Création du contexte
@@ -16,45 +16,56 @@ export function ProjectProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Charger tous les projets
-  const loadProjects = async () => {
+  // Charger tous les projets - version optimisée
+  const loadProjects = useCallback(async () => {
     setLoading(true);
+    setError(null);
+    
     try {
       const data = await fetchProjects();
-      setProjects(data);
-      setError(null);
+      // S'assurer que data est toujours un tableau, même si undefined
+      setProjects(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Erreur lors du chargement des projets:", err);
       setError("Impossible de charger les projets. Veuillez réessayer.");
+      setProjects([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Charger un projet spécifique
-  const loadProject = async (projectId) => {
+  const loadProject = useCallback(async (projectId) => {
     setLoading(true);
+    setError(null);
+    
     try {
       const data = await fetchProjectById(projectId);
       setCurrentProject(data);
-      setError(null);
       return data;
     } catch (err) {
       console.error(`Erreur lors du chargement du projet ${projectId}:`, err);
       setError("Impossible de charger le projet. Veuillez réessayer.");
+      setCurrentProject(null);
       return null;
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Ajouter un nouveau projet à la liste
-  const addProject = (project) => {
-    setProjects(prevProjects => [...prevProjects, project]);
-  };
+  const addProject = useCallback((project) => {
+    setProjects(prevProjects => {
+      // Vérifier si le projet existe déjà pour éviter les doublons
+      const projectExists = prevProjects.some(p => p.id === project.id);
+      return projectExists 
+        ? prevProjects.map(p => p.id === project.id ? project : p)
+        : [...prevProjects, project];
+    });
+  }, []);
 
   // Mettre à jour un projet existant
-  const updateProject = (updatedProject) => {
+  const updateProject = useCallback((updatedProject) => {
     setProjects(prevProjects => 
       prevProjects.map(project => 
         project.id === updatedProject.id ? updatedProject : project
@@ -64,12 +75,12 @@ export function ProjectProvider({ children }) {
     if (currentProject && currentProject.id === updatedProject.id) {
       setCurrentProject(updatedProject);
     }
-  };
+  }, [currentProject]);
 
   // Charger les projets au montage du composant
   useEffect(() => {
     loadProjects();
-  }, []);
+  }, [loadProjects]);
 
   // Valeurs exposées par le contexte
   const value = {

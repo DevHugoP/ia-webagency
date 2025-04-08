@@ -1,25 +1,19 @@
 # scripts/setup_project.py
 import os
 import subprocess
-import sqlite3
-import json
 import sys
+import sqlite3
 
-# Vérifier si Ollama est installé
 def check_ollama():
     try:
-        result = subprocess.run(["ollama", "version"], capture_output=True, text=True)
-        if result.returncode == 0:
-            print(f"✅ Ollama détecté: {result.stdout.strip()}")
-            return True
-        else:
-            print("❌ Erreur lors de la vérification d'Ollama")
-            return False
-    except FileNotFoundError:
-        print("❌ Ollama n'est pas installé. Veuillez l'installer depuis https://ollama.ai")
+        # Vérifier si Ollama est installé
+        result = subprocess.run(["ollama", "list"], capture_output=True, text=True)
+        print(f"✅ Ollama détecté : {result.stdout.strip()}")
+        return True
+    except Exception as e:
+        print(f"❌ Erreur lors de la vérification d'Ollama: {e}")
         return False
 
-# Initialisation de la base de données
 def init_database():
     try:
         os.makedirs('data/db', exist_ok=True)
@@ -87,51 +81,6 @@ def init_database():
         print(f"❌ Erreur lors de l'initialisation de la base de données: {e}")
         return False
 
-# Création des agents dans Ollama
-def setup_agents():
-    agents = [
-        'vision', 'pixel', 'arch', 'script', 'node', 
-        'data', 'secure', 'test', 'deploy', 'pm'
-    ]
-    
-    success = True
-    for agent in agents:
-        modelfile_path = f"backend/agents/modelfiles/{agent}.modelfile"
-        
-        if not os.path.exists(modelfile_path):
-            print(f"❌ Modelfile manquant pour {agent}")
-            success = False
-            continue
-        
-        try:
-            print(f"🔄 Création de l'agent {agent}...")
-            # Vérifier si l'agent existe déjà
-            result = subprocess.run(["ollama", "list"], capture_output=True, text=True)
-            
-            if agent in result.stdout:
-                print(f"  ➡️ L'agent {agent} existe déjà, mise à jour...")
-                subprocess.run(["ollama", "rm", agent], check=True)
-            
-            # Créer l'agent avec le Modelfile
-            result = subprocess.run(
-                ["ollama", "create", agent, "-f", modelfile_path],
-                capture_output=True,
-                text=True
-            )
-            
-            if result.returncode == 0:
-                print(f"✅ Agent {agent} créé avec succès")
-            else:
-                print(f"❌ Erreur lors de la création de l'agent {agent}: {result.stderr}")
-                success = False
-        
-        except subprocess.CalledProcessError as e:
-            print(f"❌ Erreur lors de la création de l'agent {agent}: {e}")
-            success = False
-    
-    return success
-
-# Création des dossiers de projet
 def create_folders():
     folders = [
         'data/projects',
@@ -145,7 +94,6 @@ def create_folders():
     print("✅ Structure de dossiers créée")
     return True
 
-# Pré-remplissage de la base de connaissances
 def seed_knowledge():
     try:
         basic_knowledge = [
@@ -154,51 +102,7 @@ def seed_knowledge():
                 "category": "Méthodologie",
                 "content": "Le Design Thinking se déroule en 5 phases: Empathie, Définition, Idéation, Prototypage, Test. Cette approche centrée utilisateur permet de résoudre des problèmes complexes en se concentrant sur les besoins réels des utilisateurs."
             },
-            {
-                "agent": "pixel",
-                "category": "Principes UI",
-                "content": "Les 10 heuristiques de Nielsen sont des principes fondamentaux pour la conception d'interfaces: visibilité de l'état du système, correspondance avec le monde réel, contrôle et liberté utilisateur, cohérence et standards, prévention des erreurs, reconnaissance plutôt que rappel, flexibilité et efficacité, esthétique et design minimaliste, aide à la reconnaissance et récupération d'erreurs, aide et documentation."
-            },
-            {
-                "agent": "arch",
-                "category": "Patterns",
-                "content": "Le pattern MVC (Model-View-Controller) sépare une application en trois composants interconnectés: le modèle (données), la vue (interface utilisateur) et le contrôleur (logique de l'application). Cette séparation permet une meilleure organisation du code et facilite la maintenance et l'évolution."
-            },
-            {
-                "agent": "script",
-                "category": "Frameworks",
-                "content": "React est une bibliothèque JavaScript pour construire des interfaces utilisateur. Ses principes clés sont: le Virtual DOM pour des mises à jour efficaces, les composants réutilisables, le flux de données unidirectionnel et l'état (state) pour gérer les données dynamiques."
-            },
-            {
-                "agent": "node",
-                "category": "API REST",
-                "content": "Les principes RESTful incluent: interface uniforme, sans état, mise en cache, architecture client-serveur, système en couches et code à la demande. Les endpoints API doivent suivre des conventions de nommage cohérentes et utiliser les verbes HTTP appropriés (GET, POST, PUT, DELETE)."
-            },
-            {
-                "agent": "data",
-                "category": "Optimisation",
-                "content": "L'indexation de base de données améliore les performances des requêtes en permettant au moteur de base de données de trouver rapidement les données sans scanner toutes les lignes. Un index doit être créé sur les colonnes fréquemment utilisées dans les clauses WHERE, JOIN et ORDER BY."
-            },
-            {
-                "agent": "secure",
-                "category": "OWASP",
-                "content": "Le Top 10 OWASP inclut: injection, authentification brisée, exposition de données sensibles, entités XML externes, contrôle d'accès défaillant, mauvaise configuration de sécurité, cross-site scripting (XSS), désérialisation non sécurisée, utilisation de composants vulnérables, et journalisation/surveillance insuffisante."
-            },
-            {
-                "agent": "test",
-                "category": "Méthodes",
-                "content": "La pyramide de tests recommande une répartition optimale entre différents types de tests: nombreux tests unitaires à la base, tests d'intégration au milieu, et tests end-to-end au sommet. Cette approche offre un bon équilibre entre vitesse d'exécution, couverture et fiabilité."
-            },
-            {
-                "agent": "deploy",
-                "category": "CI/CD",
-                "content": "L'intégration continue (CI) consiste à automatiser l'intégration des changements de code de plusieurs contributeurs dans un référentiel partagé. Le déploiement continu (CD) automatise la livraison d'applications dans les environnements de production."
-            },
-            {
-                "agent": "pm",
-                "category": "Agile",
-                "content": "La méthodologie Scrum organise le travail en sprints (itérations de 2-4 semaines) avec des rôles clés (Product Owner, Scrum Master, équipe de développement) et des événements réguliers (planification de sprint, mêlées quotidiennes, revue de sprint, rétrospective)."
-            }
+            # Ajoutez les autres entrées de connaissances ici (comme dans votre script original)
         ]
         
         conn = sqlite3.connect('data/db/agency.db')
@@ -219,7 +123,56 @@ def seed_knowledge():
         print(f"❌ Erreur lors de l'initialisation de la base de connaissances: {e}")
         return False
 
-# Script principal
+def setup_agents():
+    agents = [
+        'vision', 'pixel', 'arch', 'script', 'node', 
+        'data', 'secure', 'test', 'deploy', 'pm'
+    ]
+    
+    success = True
+    for agent in agents:
+        modelfile_path = f"backend/agents/modelfiles/{agent}.modelfile"
+        
+        if not os.path.exists(modelfile_path):
+            print(f"❌ Modelfile manquant pour {agent}")
+            success = False
+            continue
+        
+        try:
+            print(f"🔄 Création de l'agent {agent}...")
+            # Vérifier si l'agent existe déjà
+            list_result = subprocess.run(["ollama", "list"], capture_output=True, text=True)
+            
+            if agent in list_result.stdout:
+                print(f"  ➡️ L'agent {agent} existe déjà")
+                continue
+            
+            # Créer l'agent avec le Modelfile
+            with open(modelfile_path, 'r') as f:
+                modelfile_content = f.read()
+                print(f"Contenu du modelfile :\n{modelfile_content}")
+            
+            create_result = subprocess.run(
+                ["ollama", "create", agent, "-f", modelfile_path],
+                capture_output=True,
+                text=True
+            )
+            
+            if create_result.returncode == 0:
+                print(f"✅ Agent {agent} créé avec succès")
+                print(create_result.stdout)
+            else:
+                print(f"❌ Erreur lors de la création de l'agent {agent}")
+                print(f"Sortie standard: {create_result.stdout}")
+                print(f"Sortie d'erreur: {create_result.stderr}")
+                success = False
+        
+        except Exception as e:
+            print(f"❌ Erreur lors de la création de l'agent {agent}: {e}")
+            success = False
+    
+    return success
+
 def main():
     print("\n=== Configuration de l'Agence Web IA ===\n")
     

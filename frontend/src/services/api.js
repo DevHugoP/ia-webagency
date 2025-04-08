@@ -26,8 +26,8 @@ api.interceptors.response.use(
 );
 
 // Fonctions génériques pour les appels API
-export const get = async (url) => {
-  return api.get(url);
+export const get = async (url, params = {}) => {
+  return api.get(url, { params });
 };
 
 export const post = async (url, data) => {

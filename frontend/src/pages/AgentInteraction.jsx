@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchAgentDetails, sendMessageToAgent, fetchAgentKnowledge } from '../services/agentService';
 import ReactMarkdown from 'react-markdown';
@@ -17,43 +17,45 @@ function AgentInteraction() {
   
   const messagesEndRef = useRef(null);
 
-  // Charger les détails de l'agent
-  useEffect(() => {
-    const loadAgentData = async () => {
-      setIsLoading(true);
-      setError(null);
-      
-      try {
-        const agentData = await fetchAgentDetails(agentName);
-        
-        if (!agentData) {
-          throw new Error(`Agent "${agentName}" non trouvé`);
-        }
-        
-        setAgent(agentData);
-        
-        // Ajouter un message de bienvenue
-        setMessages([{
-          id: 'welcome',
-          sender: 'agent',
-          content: `Bonjour, je suis ${agentData.title || agentData.name}, ${agentData.description || 'un agent IA spécialisé'}. Comment puis-je vous aider aujourd'hui?`,
-          timestamp: new Date()
-        }]);
-        
-        // Charger les connaissances de l'agent
-        const knowledgeData = await fetchAgentKnowledge(agentName);
-        setKnowledge(knowledgeData || []);
-        
-      } catch (err) {
-        console.error(`Erreur lors du chargement des données de l'agent ${agentName}:`, err);
-        setError(err.toString());
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // Charger les détails de l'agent et ses connaissances
+  const loadAgentData = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
     
-    loadAgentData();
+    try {
+      // Charger les détails de l'agent
+      const agentData = await fetchAgentDetails(agentName);
+      
+      if (!agentData) {
+        throw new Error(`Agent "${agentName}" non trouvé`);
+      }
+      
+      setAgent(agentData);
+      
+      // Ajouter un message de bienvenue
+      setMessages([{
+        id: 'welcome',
+        sender: 'agent',
+        content: `Bonjour, je suis ${agentData.title || agentData.name}, ${agentData.description || 'un agent IA spécialisé'}. Comment puis-je vous aider aujourd'hui?`,
+        timestamp: new Date()
+      }]);
+      
+      // Charger les connaissances de l'agent
+      const knowledgeData = await fetchAgentKnowledge(agentName);
+      setKnowledge(Array.isArray(knowledgeData) ? knowledgeData : []);
+      
+    } catch (err) {
+      console.error(`Erreur lors du chargement des données de l'agent ${agentName}:`, err);
+      setError(err.toString());
+    } finally {
+      setIsLoading(false);
+    }
   }, [agentName]);
+
+  // Charger les données de l'agent au montage et quand le nom change
+  useEffect(() => {
+    loadAgentData();
+  }, [loadAgentData]);
 
   // Faire défiler vers le bas lorsque de nouveaux messages sont ajoutés
   useEffect(() => {
@@ -139,7 +141,7 @@ function AgentInteraction() {
             <ul className="knowledge-list">
               {knowledge.slice(0, 5).map((item, index) => (
                 <li key={index} className="knowledge-item">
-                  <span className="knowledge-category">{item.category}</span>
+                  <span className="knowledge-category">{item.category || 'Général'}</span>
                   <p>{item.content.length > 100 
                     ? `${item.content.substring(0, 100)}...` 
                     : item.content}
