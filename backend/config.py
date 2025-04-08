@@ -15,7 +15,7 @@ DATABASE = os.path.join(DB_DIR, 'agency.db')
 API_PREFIX = '/api'
 DEBUG = True
 HOST = '0.0.0.0'
-PORT = 5000
+PORT = 5001
 
 # Configuration des agents
 OLLAMA_BASE_MODEL = "llama3:8b"

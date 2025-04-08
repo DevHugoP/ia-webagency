@@ -3,10 +3,14 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os
 import json
+import sys
+
+# Ajouter le répertoire courant au chemin de recherche Python
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+
+# Import des modules de l'application
 from database.db import init_db, get_db
-from agents.agent_manager import AgentManager
-from agents.workflow import ProjectWorkflow
-from utils.file_manager import save_brief, get_deliverable, save_feedback
+import config
 import sqlite3
 
 # Initialisation de l'application
@@ -18,11 +22,18 @@ os.makedirs('data/db', exist_ok=True)
 os.makedirs('data/projects', exist_ok=True)
 os.makedirs('data/knowledge', exist_ok=True)
 
-# Initialiser la base de données
-init_db()
+# Initialiser la base de données dans le contexte de l'application
+with app.app_context():
+    init_db()
+
+# Import des modules qui utilisent la base de données (après initialisation)
+from agents.agent_manager import AgentManager, get_agent_manager
+from agents.workflow import ProjectWorkflow, get_project_workflow
+from utils.file_manager import save_brief, get_deliverable, save_feedback, get_brief
 
 # Initialiser le gestionnaire d'agents
-agent_manager = AgentManager()
+with app.app_context():
+    agent_manager = get_agent_manager()
 
 # Routes pour les projets
 @app.route('/api/projects', methods=['GET'])
@@ -106,7 +117,7 @@ def get_project(project_id):
                 deliverables.append({
                     'name': file,
                     'type': file.split('_')[0] if '_' in file else 'other',
-                    'has_feedback': os.path.exists(f"data/projects/{project['name']}/feedback/{file}")
+                    'has_feedback': os.path.exists(f"data/projects/{project['name']}/feedback/{file.replace('.md', '')}_feedback.md")
                 })
     
     return jsonify({
@@ -132,7 +143,7 @@ def start_project_workflow(project_id):
     
     # Démarrer le workflow du projet en arrière-plan
     # Note: Dans une vraie application, cela serait fait avec une tâche asynchrone (Celery, etc.)
-    workflow = ProjectWorkflow(agent_manager, project['name'])
+    workflow = get_project_workflow(agent_manager, project['name'])
     workflow.start()
     
     return jsonify({'status': 'workflow_started'})
@@ -229,5 +240,26 @@ def get_knowledge_by_category(category):
         'created_at': item['created_at']
     } for item in items])
 
+@app.route('/api/knowledge/search', methods=['GET'])
+def search_knowledge():
+    search_term = request.args.get('q', '')
+    if not search_term:
+        return jsonify([])
+    
+    db = get_db()
+    items = db.execute(
+        'SELECT * FROM knowledge WHERE content LIKE ? OR query LIKE ?',
+        (f'%{search_term}%', f'%{search_term}%')
+    ).fetchall()
+    
+    return jsonify([{
+        'id': item['id'],
+        'agent': item['agent'],
+        'category': item['category'],
+        'query': item['query'],
+        'content': item['content'],
+        'created_at': item['created_at']
+    } for item in items])
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)

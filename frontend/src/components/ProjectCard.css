@@ -1,0 +1,106 @@
+.project-card {
+    background-color: var(--card-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 260px;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .project-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .status-completed {
+    background-color: rgba(40, 199, 111, 0.15);
+    color: var(--success-color);
+  }
+  
+  .status-in-progress {
+    background-color: rgba(74, 107, 255, 0.15);
+    color: var(--primary-color);
+  }
+  
+  .status-paused {
+    background-color: rgba(255, 171, 0, 0.15);
+    color: var(--warning-color);
+  }
+  
+  .status-failed {
+    background-color: rgba(234, 84, 85, 0.15);
+    color: var(--danger-color);
+  }
+  
+  .status-created {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--text-light);
+  }
+  
+  .project-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    margin-right: 80px; /* Espace pour le statut */
+    color: var(--text-color);
+  }
+  
+  .project-description {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+    flex-grow: 1;
+  }
+  
+  .project-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+  }
+  
+  .project-date, .project-deliverables {
+    display: flex;
+    align-items: center;
+  }
+  
+  .project-date i, .project-deliverables i {
+    margin-right: 0.4rem;
+  }
+  
+  .project-link {
+    text-decoration: none;
+    align-self: flex-start;
+  }
+  
+  .project-link button {
+    width: 100%;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .project-card {
+      padding: 1.25rem;
+    }
+    
+    .project-status {
+      top: 0.75rem;
+      right: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.7rem;
+    }
+  }

@@ -79,7 +79,7 @@ FRONTEND_PID=$!
 
 echo "✅ Services démarrés avec succès!"
 echo "📋 Interface web: http://localhost:3000"
-echo "🚀 API: http://localhost:5000"
+echo "🚀 API: http://localhost:5001"
 echo "Appuyez sur Ctrl+C pour arrêter tous les services."
 
 # Attendre que l'utilisateur appuie sur Ctrl+C

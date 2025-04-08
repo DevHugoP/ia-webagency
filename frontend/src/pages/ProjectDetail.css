@@ -1,0 +1,214 @@
+.project-detail-page {
+    width: 100%;
+  }
+  
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .project-header-content {
+    flex: 1;
+  }
+  
+  .project-header h1 {
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+  }
+  
+  .project-description {
+    color: var(--text-light);
+    margin-bottom: 1rem;
+  }
+  
+  .project-meta {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .project-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .status-completed {
+    color: var(--success-color);
+    font-weight: 600;
+  }
+  
+  .status-in_progress {
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+  
+  .status-paused {
+    color: var(--warning-color);
+    font-weight: 600;
+  }
+  
+  .status-failed {
+    color: var(--danger-color);
+    font-weight: 600;
+  }
+  
+  .status-created {
+    color: var(--text-light);
+    font-weight: 600;
+  }
+  
+  .project-actions {
+    min-width: 180px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .project-content {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+  }
+  
+  /* Liste des livrables */
+  .deliverables-list {
+    background-color: var(--card-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    height: fit-content;
+  }
+  
+  .deliverables-list h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .deliverables {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .deliverable-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: var(--background-color);
+    position: relative;
+  }
+  
+  .deliverable-item:hover {
+    background-color: rgba(74, 107, 255, 0.1);
+  }
+  
+  .deliverable-item.active {
+    background-color: rgba(74, 107, 255, 0.15);
+    border-left: 3px solid var(--primary-color);
+  }
+  
+  .deliverable-name {
+    flex: 1;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .deliverable-agent {
+    margin-left: 0.5rem;
+  }
+  
+  .feedback-badge {
+    background-color: var(--accent-color);
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    margin-left: 0.5rem;
+  }
+  
+  .empty-deliverables {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-light);
+    background-color: var(--background-color);
+    border-radius: 8px;
+  }
+  
+  /* Visualiseur de livrable */
+  .deliverable-container {
+    min-height: 500px;
+  }
+  
+  .no-deliverable-selected {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 400px;
+    padding: 2rem;
+    text-align: center;
+    background-color: var(--card-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+  }
+  
+  .placeholder-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--text-light);
+  }
+  
+  .no-deliverable-selected h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .no-deliverable-selected p {
+    color: var(--text-light);
+    max-width: 400px;
+  }
+  
+  /* Responsive */
+  @media (max-width: 992px) {
+    .project-content {
+      grid-template-columns: 1fr;
+    }
+    
+    .deliverables-list {
+      height: auto;
+      margin-bottom: 1.5rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .project-header {
+      flex-direction: column;
+    }
+    
+    .project-actions {
+      width: 100%;
+      margin-top: 1rem;
+      justify-content: flex-start;
+    }
+    
+    .project-meta {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
